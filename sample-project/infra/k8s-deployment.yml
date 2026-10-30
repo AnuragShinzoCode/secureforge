@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      # ❌ Host network enabled
+      hostNetwork: true
+      containers:
+        - name: app
+          # ❌ Using :latest tag
+          image: myapp:latest
+          ports:
+            - containerPort: 3000
+          securityContext:
+            # ❌ Privileged container
+            privileged: true
+            # ❌ Running as root
+            runAsUser: 0
+          env:
+            - name: DB_PASSWORD
+              value: "hardcoded-password"

@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    # ❌ Privileged mode
+    privileged: true
+    # ❌ Host network
+    network_mode: "host"
+    volumes:
+      # ❌ Docker socket mounted
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/app
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3306:3306"

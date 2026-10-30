@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Intentionally insecure CloudFormation template for demo
+
+Resources:
+  # ❌ Security group open to world
+  WebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Web security group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+
+  # ❌ S3 bucket with public ACL
+  DataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-public-data
+      AccessControl: PublicRead
+
+  # ❌ IAM role with wildcard permissions
+  AdminRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: admin-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: admin-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
